@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My To-Do List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fa;
+            color: #333;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        h1, h3 { color: #2c3e50; }
+        h1 { text-align: center; margin-bottom: 25px; }
+        h3 { margin-top: 25px; border-bottom: 2px solid #f1f2f6; padding-bottom: 8px; }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 2;
+            padding: 12px 15px;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+        input[type="date"] {
+            flex: 1;
+            padding: 12px 10px;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        button[type="submit"] {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover { background-color: #2980b9; }
+        ul { list-style-type: none; padding: 0; }
+        li {
+            padding: 12px 15px;
+            background: #fdfdfd;
+            border: 1px solid #f1f2f6;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .task-info { display: flex; flex-direction: column; gap: 3px; }
+        .due-date { font-size: 12px; color: #e67e22; font-weight: 600; }
+        .completed { text-decoration: line-through; color: #b2bec3; }
+        .empty-text { color: #95a5a6; font-style: italic; font-size: 14px; }
+        .actions { display: flex; gap: 6px; }
+        .actions a {
+            text-decoration: none;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            border-radius: 6px;
+        }
+        .btn-complete { background-color: #2ecc71; }
+        .btn-undo { background-color: #f39c12; }
+        .btn-edit { background-color: #3498db; }
+        .btn-delete { background-color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <h1>My To-Do List</h1>
+
+    <!-- Form to Add Task with Due Date -->
+    <form action="#" th:action="@{/add}" method="post">
+        <input type="text" name="title" placeholder="Enter a new task..." required />
+        <input type="date" name="dueDate" required />
+        <button type="submit">Add Task</button>
+    </form>
+
+    <!-- Active Tasks Section -->
+    <h3>Pending Tasks</h3>
+    <ul>
+        <li th:if="${activeTasks.empty}">
+            <span class="empty-text">No pending tasks. Great job!</span>
+        </li>
+        <li th:each="task : ${activeTasks}">
+            <div class="task-info">
+                <span th:text="${task.title}">Task Title</span>
+                <span class="due-date" th:text="'Due: ' + ${task.dueDate}">Due Date</span>
+            </div>
+            <div class="actions">
+                <a th:href="@{/toggle/{id}(id=${task.id})}" class="btn-complete">Complete</a>
+                <a th:href="@{/edit/{id}(id=${task.id})}" class="btn-edit">Edit</a>
+                <a th:href="@{/delete/{id}(id=${task.id})}" class="btn-delete">Delete</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Completed Tasks Section -->
+    <h3>Completed Tasks</h3>
+    <ul>
+        <li th:if="${completedTasks.empty}">
+            <span class="empty-text">No completed tasks yet.</span>
+        </li>
+        <li th:each="task : ${completedTasks}">
+            <div class="task-info">
+                <span class="completed" th:text="${task.title}">Task Title</span>
+                <span class="due-date" th:text="'Due: ' + ${task.dueDate}">Due Date</span>
+            </div>
+            <div class="actions">
+                <a th:href="@{/toggle/{id}(id=${task.id})}" class="btn-undo">Undo</a>
+                <a th:href="@{/delete/{id}(id=${task.id})}" class="btn-delete">Delete</a>
+            </div>
+        </li>
+    </ul>
+</body>
+</html>
